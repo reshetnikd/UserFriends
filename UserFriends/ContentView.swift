@@ -9,11 +9,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var users = [User]()
+    
     var body: some View {
-        Button(action: {
-            self.loadData()
-        }) {
-            Image(systemName: "plus")
+        NavigationView {
+            List(users, id: \.self.id) { user in
+                VStack(alignment: .leading) {
+                    Text(user.name)
+                    Text(user.email)
+                }
+            }
+            .navigationBarTitle("Users")
+            .navigationBarItems(trailing: Button(action: {
+                self.loadData()
+            }) {
+                Image(systemName: "plus")
+            })
         }
     }
     
@@ -28,6 +39,7 @@ struct ContentView: View {
             }
             
             if let decoded = try? JSONDecoder().decode([User].self, from: data) {
+                self.users = decoded
                 print("\(decoded.count) \(decoded[0].friends[0].name)")
             } else {
                 print("\(error?.localizedDescription ?? "Invalid response from server")")
