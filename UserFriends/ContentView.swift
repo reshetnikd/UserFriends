@@ -16,7 +16,9 @@ struct ContentView: View {
             List(users, id: \.self.id) { user in
                 VStack(alignment: .leading) {
                     Text(user.name)
+                        .font(.headline)
                     Text(user.email)
+                        .font(.subheadline)
                 }
             }
             .navigationBarTitle("Users")
