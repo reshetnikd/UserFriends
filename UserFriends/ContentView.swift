@@ -14,18 +14,20 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List(users, id: \.self.id) { user in
-                VStack(alignment: .leading) {
-                    Text(user.name)
-                        .font(.headline)
-                    Text(user.email)
-                        .font(.subheadline)
+                NavigationLink(destination: UserDetailView(user: user)) {
+                    VStack(alignment: .leading) {
+                        Text(user.name)
+                            .font(.headline)
+                        Text(user.email)
+                            .font(.subheadline)
+                    }
                 }
             }
             .navigationBarTitle("Users")
             .navigationBarItems(trailing: Button(action: {
                 self.loadData()
             }) {
-                Image(systemName: "plus")
+                Image(systemName: "square.and.arrow.down")
             })
         }
     }
