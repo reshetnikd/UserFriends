@@ -26,7 +26,7 @@ class User: Identifiable, Codable {
     var email = ""
     var address = ""
     var about = ""
-    var registered = Date()
+    var registered = ""
     var tags = [String]()
     var friends = [Friend]()
     
@@ -59,6 +59,7 @@ class User: Identifiable, Codable {
         email = try container.decode(String.self, forKey: .email)
         address = try container.decode(String.self, forKey: .address)
         about = try container.decode(String.self, forKey: .about)
+        registered = try container.decode(String.self, forKey: .registered)
         tags = try container.decode([String].self, forKey: .tags)
         friends = try container.decode([Friend].self, forKey: .friends)
     }

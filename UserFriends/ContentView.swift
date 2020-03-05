@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List(users, id: \.self.id) { user in
-                NavigationLink(destination: UserDetailView(user: user)) {
+                NavigationLink(destination: UserDetailView(selectedUser: user, users: self.users)) {
                     VStack(alignment: .leading) {
                         Text(user.name)
                             .font(.headline)
@@ -44,7 +44,6 @@ struct ContentView: View {
             
             if let decoded = try? JSONDecoder().decode([User].self, from: data) {
                 self.users = decoded
-                print("\(decoded.count) \(decoded[0].friends[0].name)")
             } else {
                 print("\(error?.localizedDescription ?? "Invalid response from server")")
             }
