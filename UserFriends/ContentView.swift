@@ -9,16 +9,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var users = [User]()
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var users: FetchedResults<User>
+//    @State private var users = [User]()
     
     var body: some View {
         NavigationView {
-            List(users, id: \.self.id) { user in
-                NavigationLink(destination: UserDetailView(selectedUser: user, users: self.users)) {
+            List(users, id: \.self) { user in
+                NavigationLink(destination: UserDetailView(selectedUser: user)) {
                     VStack(alignment: .leading) {
-                        Text(user.name)
+                        Text(user.name ?? "Unknown")
                             .font(.headline)
-                        Text(user.email)
+                        Text(user.email ?? "Unknown")
                             .font(.subheadline)
                     }
                 }
@@ -42,8 +44,14 @@ struct ContentView: View {
                 return
             }
             
-            if let decoded = try? JSONDecoder().decode([User].self, from: data) {
-                self.users = decoded
+            guard let codingUserInfoKeyManagedObjectContext = CodingUserInfoKey.managedObjectContext else {
+                fatalError("Failed to retrieve context")
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.userInfo[codingUserInfoKeyManagedObjectContext] = self.moc
+            if let _ = try? decoder.decode([User].self, from: data) {
+                try? self.moc.save()
             } else {
                 print("\(error?.localizedDescription ?? "Invalid response from server")")
             }

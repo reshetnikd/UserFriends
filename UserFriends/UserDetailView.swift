@@ -7,51 +7,52 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct UserDetailView: View {
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var users: FetchedResults<User>
     let selectedUser: User
-    let users: [User]
-    
+
     var body: some View {
         Form {
             HStack {
                 Text("Age:")
                     .font(.headline)
-                Text("\(selectedUser.age)")
+                Text("\(selectedUser.age ?? 0)")
             }
             HStack {
                 Text("Company:")
                     .font(.headline)
-                Text(selectedUser.company)
+                Text(selectedUser.company ?? "Unknown")
             }
             HStack {
                 Text("Email:")
                     .font(.headline)
-                Text(selectedUser.email)
+                Text(selectedUser.email ?? "Unknown")
             }
             HStack {
                 Text("Registered:")
                     .font(.headline)
-                Text(dateFormatter(selectedUser.registered))
+                Text(dateFormatter(selectedUser.registered) ?? "Unknown")
             }
             VStack(alignment: .leading) {
                 Text("Address:")
                     .font(.headline)
-                Text(selectedUser.address)
+                Text(selectedUser.address ?? "Unknown")
             }
             VStack(alignment: .leading) {
                 Text("About:")
                     .font(.headline)
-                Text(selectedUser.about)
+                Text(selectedUser.about ?? "Unknown")
             }
             Section(header: Text("Tags:").font(.headline)) {
-                List(selectedUser.tags, id: \.self) { tag in
+                List(selectedUser.tags ?? [], id: \.self) { tag in
                     Text(tag)
                 }
             }
             Section(header: Text("Friends:").font(.headline)) {
-                List(selectedUser.friends, id: \.self.id) { friend in
-                    NavigationLink(destination: UserDetailView(selectedUser: self.users.first(where: { $0.id == friend.id })!, users: self.users)) {
+                List(selectedUser.friends ?? [], id: \.self.id) { friend in
+                    NavigationLink(destination: UserDetailView(selectedUser: self.users.first(where: { $0.id == friend.id })!)) {
                         Text(friend.name)
                     }
                 }
@@ -59,7 +60,7 @@ struct UserDetailView: View {
         }
         .navigationBarTitle(selectedUser.name)
     }
-    
+
     func dateFormatter(_ string: String) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US")
@@ -73,6 +74,6 @@ struct UserDetailView: View {
 
 struct UserDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        UserDetailView(selectedUser: User(), users: [User]())
+        UserDetailView(selectedUser: User())
     }
 }
